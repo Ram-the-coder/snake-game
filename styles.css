@@ -1,0 +1,48 @@
+#board {
+	width: 520px;
+	height: 510px;
+	margin: auto;
+	border: 5px solid brown;
+}
+
+.snake-row {
+	height: 10px;
+	width: 510px;
+	margin: 0px;
+}
+
+.snake-cell {
+	height: 10px;
+	width: 10px;
+	padding: 0px;
+	box-sizing: border-box;
+	border: 1px solid white;
+}
+
+.snake-body {
+	background-color: black;
+}
+
+.food {
+	background-color: red;
+}
+
+#header {
+	height: 50px;
+	margin: 0px;
+}
+
+#game {
+	width: 520px;
+	height: 550px;
+	margin: auto;	
+}
+
+.col {
+	text-align: center;	
+}
+
+#hiscore-board {
+	align-items: right;
+}
+
