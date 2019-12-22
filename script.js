@@ -5,8 +5,8 @@ let isPaused=1, score=0, hiscore, gameOver=1
 
 /* The coordinates of food */
 let foodCoord = {
-	x: Math.floor(Math.random() * 49),
-	y: Math.floor(Math.random() * 49),
+	x: Math.floor(Math.random() * 50),
+	y: Math.floor(Math.random() * 50),
 }
 
 /* The coordinates of the snake */
@@ -29,8 +29,8 @@ function startBoardRefresh() {
 function startFoodGeneration() {
 	foodTimer = setInterval(() => {
 		foodCoord = {
-			x: Math.floor(Math.random() * 49),
-			y: Math.floor(Math.random() * 49),
+			x: Math.floor(Math.random() * 50),
+			y: Math.floor(Math.random() * 50),
 		}
 	}, foodStayTime)
 }
@@ -98,10 +98,10 @@ function moveSnake() {
 		} else {
 			// Head of snake
 			switch(coord.dir) {
-				case RIGHT: snakeCoords[index].y = (coord.y + 1) % 49; break;
-				case UP: snakeCoords[index].x = (coord.x - 1 + 49) % 49; break;					
-				case LEFT: snakeCoords[index].y = (coord.y - 1 + 49) % 49; break;
-				case DOWN: snakeCoords[index].x = (coord.x + 1) % 49; break;
+				case RIGHT: snakeCoords[index].y = (coord.y + 1) % 50; break;
+				case UP: snakeCoords[index].x = (coord.x - 1 + 50) % 50; break;					
+				case LEFT: snakeCoords[index].y = (coord.y - 1 + 50) % 50; break;
+				case DOWN: snakeCoords[index].x = (coord.x + 1) % 50; break;
 			}	
 
 			const cell = getCell(snakeCoords[index].x, snakeCoords[index].y)
@@ -126,8 +126,8 @@ function moveSnake() {
 				updateScoreBoard()
 				stopFoodGeneration()
 				foodCoord = {
-					x: Math.floor(Math.random() * 49),
-					y: Math.floor(Math.random() * 49),
+					x: Math.floor(Math.random() * 50),
+					y: Math.floor(Math.random() * 50),
 				}
 				startFoodGeneration()
 				growSnake()	
@@ -139,10 +139,10 @@ function moveSnake() {
 function growSnake() {
 	const tailCoord = JSON.parse(JSON.stringify(snakeCoords[0]));
 	switch(tailCoord.dir) {
-		case RIGHT: tailCoord.y = (tailCoord.y - 1 + 49) % 49; break;
-		case UP: tailCoord.x = (tailCoord.x + 1) % 49; break;					
-		case LEFT: tailCoord.y = (tailCoord.y + 1) % 49; break;
-		case DOWN: tailCoord.x = (tailCoord.x - 1 + 49) % 49; break;
+		case RIGHT: tailCoord.y = (tailCoord.y - 1 + 50) % 50; break;
+		case UP: tailCoord.x = (tailCoord.x + 1) % 50; break;					
+		case LEFT: tailCoord.y = (tailCoord.y + 1) % 50; break;
+		case DOWN: tailCoord.x = (tailCoord.x - 1 + 50) % 50; break;
 	}
 	snakeCoords.unshift(tailCoord)
 	console.log(JSON.parse(JSON.stringify(snakeCoords)))
