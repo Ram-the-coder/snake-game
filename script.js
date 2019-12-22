@@ -2,6 +2,7 @@ const UP = 0, RIGHT = 1, DOWN = 2, LEFT = 3
 const foodStayTime = 10000, boardRefreshRate = 75
 let refreshBoard, foodTimer // setInterval variables
 let isPaused=1, score=0, hiscore, gameOver=1
+let dir; // Direction that the head of the snake is moving
 
 /* The coordinates of food */
 let foodCoord;
@@ -10,16 +11,18 @@ let snakeCoords;
 
 function init() {
 	snakeCoords = [
-		{ x: 25, y: 25, dir: RIGHT }, 
-		{ x: 25, y: 26, dir: RIGHT }, 
-		{ x: 25, y: 27, dir: RIGHT },
-		{ x: 25, y: 28, dir: RIGHT }
+		{ x: 25, y: 25 }, 
+		{ x: 25, y: 26 }, 
+		{ x: 25, y: 27 },
+		{ x: 25, y: 28 }
 	]	
-
+	// The last coordinate in the snakeCoords represend the head of the snake
 	foodCoord = {
 		x: Math.floor(Math.random() * 50),
 		y: Math.floor(Math.random() * 50),
 	}
+
+	dir = RIGHT
 }
 
 
@@ -102,7 +105,7 @@ function moveSnake() {
 			snakeCoords[index] = JSON.parse(JSON.stringify(snakeCoords[index+1]))
 		} else {
 			// Head of snake
-			switch(coord.dir) {
+			switch(dir) {
 				case RIGHT: snakeCoords[index].y = (coord.y + 1) % 50; break;
 				case UP: snakeCoords[index].x = (coord.x - 1 + 50) % 50; break;					
 				case LEFT: snakeCoords[index].y = (coord.y - 1 + 50) % 50; break;
@@ -143,15 +146,7 @@ function moveSnake() {
 
 function growSnake() {
 	const tailCoord = JSON.parse(JSON.stringify(snakeCoords[0]));
-	switch(tailCoord.dir) {
-		case RIGHT: tailCoord.y = (tailCoord.y - 1 + 50) % 50; break;
-		case UP: tailCoord.x = (tailCoord.x + 1) % 50; break;					
-		case LEFT: tailCoord.y = (tailCoord.y + 1) % 50; break;
-		case DOWN: tailCoord.x = (tailCoord.x - 1 + 50) % 50; break;
-	}
 	snakeCoords.unshift(tailCoord)
-	console.log(JSON.parse(JSON.stringify(snakeCoords)))
-
 }
 
 function updateScoreBoard() {
@@ -227,24 +222,24 @@ window.addEventListener('keyup', throttle(function(e) {
 					handleButtonClick()
 					break
 		case 37: // left
-					if(snakeCoords[snakeCoords.length - 1].dir == RIGHT)
+					if(dir == RIGHT)
 						break
-					snakeCoords[snakeCoords.length - 1].dir = LEFT
+					dir = LEFT
 					break
 		case 38: // up
-					if(snakeCoords[snakeCoords.length - 1].dir == DOWN)
+					if(dir == DOWN)
 						break
-					snakeCoords[snakeCoords.length - 1].dir = UP
+					dir = UP
 					break
 		case 39: // right 
-					if(snakeCoords[snakeCoords.length - 1].dir == LEFT)
+					if(dir == LEFT)
 						break
-					snakeCoords[snakeCoords.length - 1].dir = RIGHT
+					dir = RIGHT
 					break
 		case 40: // down
-					if(snakeCoords[snakeCoords.length - 1].dir == UP)
+					if(dir == UP)
 						break
-					snakeCoords[snakeCoords.length - 1].dir = DOWN
+					dir = DOWN
 					break
 	}
 }, boardRefreshRate))
