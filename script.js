@@ -27,10 +27,21 @@ function startBoardRefresh() {
 /* Setup the setInterval function so that it periodically generates food at a new spot */
 function startFoodGeneration() {
 	foodTimer = setInterval(() => {
-		foodCoord = {
-			x: Math.floor(Math.random() * 50),
-			y: Math.floor(Math.random() * 50),
-		}
+		let okay = true;
+		do {
+			foodCoord = {
+				x: Math.floor(Math.random() * 50),
+				y: Math.floor(Math.random() * 50),
+			}	
+
+			for(const coord of snakeCoords) {
+				if(coord.x == foodCoord.x && coord.y == foodCoord.y) {
+					okay = false;
+					break;
+				}
+			}
+		} while(!okay)
+		
 	}, foodStayTime)
 }
 
@@ -150,6 +161,8 @@ function moveSnake() {
 		shouldGrow = true
 	}
 }
+
+/* Called when the snake has eaten food,  */
 
 /* Update the score and hi-score */
 function updateScoreBoard() {
