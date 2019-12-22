@@ -12,6 +12,7 @@ let dir; // Direction that the head of the snake is moving
 
 let foodCoord; // The coordinates of food
 let snakeCoords; // The coordinates of the snake
+let shouldGrow = false
 
 
 /* Setup the setInterval function so that it periodically refreshes the board */
@@ -94,58 +95,60 @@ function renderBoard() {
 
 /* Recalculates the coordinates of all the parts of the snake and checks for the event of collision and eating of food */
 function moveSnake() {
-	snakeCoords.forEach((coord, index, snakeCoords) => {
-		// If it is not the head of the snake, the new coordinate of this part is the old coordinate of the next part of the snake
-		if(index < snakeCoords.length - 1) {
-			snakeCoords[index] = JSON.parse(JSON.stringify(snakeCoords[index+1]))
+
+	/*  Except the head, every part of the snake takes the place of the part in front of it.
+		Which means effectively the place where the tail existed will be empty and the head will move by one step 
+		and all other coordinates will still be occupied by the snake's body
+
+		If the snake should not grow now, remove the tail coordinate, otherwise keep it as it will effectively increase its length
+
+		The snake is grown by adding one part as the tail 
+   		When the snake moves by one step, the empty place left by the old tail is occupied by the new part */
+
+	if(!shouldGrow) {
+		snakeCoords.shift() // Remove the tail if the snake should not grow
+	}
+
+	shouldGrow = false
+
+	let newCoords = JSON.parse(JSON.stringify(snakeCoords[snakeCoords.length - 1])) //new coordinates of the head
+	switch(dir) {
+		case RIGHT: newCoords.y = (newCoords.y + 1) % 50; break;
+		case UP: newCoords.x = (newCoords.x - 1 + 50) % 50; break;					
+		case LEFT: newCoords.y = (newCoords.y - 1 + 50) % 50; break;
+		case DOWN: newCoords.x = (newCoords.x + 1) % 50; break;
+	}	
+
+	snakeCoords.push(newCoords) // Insert newCoords into the end of snakeCoords to make it the head of the snake
+
+	const cell = getCell(newCoords.x, newCoords.y)
+
+	// If head of snake collides with body
+	if(cell.classList.contains('snake-body')) {
+		gameOver = 1
+		$('#pause').text('Start')
+		stopBoardRefresh()
+		if(score > hiscore) {
+			alert("Congratulations you have achieved the hiscore of " + score)
+			insertIntoLocalStorage('hiscore', score)
 		} else {
-			// Head of snake
-			switch(dir) {
-				case RIGHT: snakeCoords[index].y = (coord.y + 1) % 50; break;
-				case UP: snakeCoords[index].x = (coord.x - 1 + 50) % 50; break;					
-				case LEFT: snakeCoords[index].y = (coord.y - 1 + 50) % 50; break;
-				case DOWN: snakeCoords[index].x = (coord.x + 1) % 50; break;
-			}	
-
-			const cell = getCell(snakeCoords[index].x, snakeCoords[index].y)
-
-			// If head of snake collides with body
-			if(cell.classList.contains('snake-body')) {
-				gameOver = 1;
-				$('#pause').text('Start')
-				stopBoardRefresh()
-				if(score > hiscore) {
-					alert("Congratulations you have achieved the hiscore of " + score)
-					insertIntoLocalStorage('hiscore', score)
-				} else {
-					alert('Gameover. You scored ' + score)
-				}
-			}
-
-			// If snake eats food
-			if(cell.classList.contains('food')) {
-				cell.classList.remove('food')
-				score += 5
-				updateScoreBoard()
-				stopFoodGeneration()
-				foodCoord = {
-					x: Math.floor(Math.random() * 50),
-					y: Math.floor(Math.random() * 50),
-				}
-				startFoodGeneration()
-				growSnake()	
-			}
+			alert('Gameover. You scored ' + score)
 		}
-	})
-}
+	}
 
-/* Called when the snake has eaten food, the snake is grown by adding one part as the tail 
-   The attributes of the added part doesn't matter as when we call moveSnake() subsequently
-   it will reassign the attributes of new part to the old tail, thus when the snake moves by one
-   step, the empty place left by the old tail is occupied by the new part */
-function growSnake() {
-	const tailCoord = JSON.parse(JSON.stringify(snakeCoords[0]));
-	snakeCoords.unshift(tailCoord)
+	// If snake eats food
+	if(cell.classList.contains('food')) {
+		cell.classList.remove('food')
+		score += 5
+		updateScoreBoard()
+		stopFoodGeneration()
+		foodCoord = {
+			x: Math.floor(Math.random() * 50),
+			y: Math.floor(Math.random() * 50),
+		}
+		startFoodGeneration()
+		shouldGrow = true
+	}
 }
 
 /* Update the score and hi-score */
