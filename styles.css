@@ -2,7 +2,6 @@
 	width: 520px;
 	height: 510px;
 	margin: auto;
-	border: 5px solid brown;
 }
 
 .snake-row {
@@ -20,29 +19,50 @@
 }
 
 .snake-body {
-	background-color: black;
+	background-color: green;
 }
 
 .food {
 	background-color: red;
+	box-sizing: border-box;
+	border: 1px solid white;
+	border-radius: 5px; 
 }
 
-#header {
-	height: 50px;
+#header { 
+	height: 75px;
 	margin: 0px;
+	background-color: #50456d;
+	color: white;
+	text-align: center;
 }
 
 #game {
 	width: 520px;
-	height: 550px;
-	margin: auto;	
+	height: 575px;
+	margin: 50px auto;	
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .col {
 	text-align: center;	
 }
 
-#hiscore-board {
-	align-items: right;
+.row {
+	margin: 0px;
+}
+
+.snake-head {
+	border-radius: 3.5px;	
+}
+
+.flex-container {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.score-row {
+	justify-content: center;
 }
 

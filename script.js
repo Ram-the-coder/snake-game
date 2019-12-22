@@ -95,6 +95,8 @@ function renderBoard() {
 	snakeCoords.forEach((coord, index) => {
 		const cell = getCell(coord.x, coord.y)
 		cell.classList.add('snake-body')
+		if(index == snakeCoords.length-1 || index == 0)
+			cell.classList.add('snake-head')
 	})	
 
 	// Mark the cell where the food exists
