@@ -1,31 +1,20 @@
 const UP = 0, RIGHT = 1, DOWN = 2, LEFT = 3
-const foodStayTime = 10000, boardRefreshRate = 75
+
+const foodStayTime = 10000  // Amount of time in milliseconds that the food stays in one place 
+							// before reappearing in another place if not consumed
+const boardRefreshRate = 75 // Speed of the game, the amount of time to wait to recalculate the new position of the snake and move it
+
 let refreshBoard, foodTimer // setInterval variables
+
 let isPaused=1, score=0, hiscore, gameOver=1
+
 let dir; // Direction that the head of the snake is moving
 
-/* The coordinates of food */
-let foodCoord;
-/* The coordinates of the snake */
-let snakeCoords;
-
-function init() {
-	snakeCoords = [
-		{ x: 25, y: 25 }, 
-		{ x: 25, y: 26 }, 
-		{ x: 25, y: 27 },
-		{ x: 25, y: 28 }
-	]	
-	// The last coordinate in the snakeCoords represend the head of the snake
-	foodCoord = {
-		x: Math.floor(Math.random() * 50),
-		y: Math.floor(Math.random() * 50),
-	}
-
-	dir = RIGHT
-}
+let foodCoord; // The coordinates of food
+let snakeCoords; // The coordinates of the snake
 
 
+/* Setup the setInterval function so that it periodically refreshes the board */
 function startBoardRefresh() {
 	isPaused = 0
 	refreshBoard = setInterval(() => {
@@ -34,6 +23,7 @@ function startBoardRefresh() {
 	}, boardRefreshRate)	
 }
 
+/* Setup the setInterval function so that it periodically generates food at a new spot */
 function startFoodGeneration() {
 	foodTimer = setInterval(() => {
 		foodCoord = {
@@ -43,24 +33,29 @@ function startFoodGeneration() {
 	}, foodStayTime)
 }
 
+/* Stop refreshing the board */
 function stopBoardRefresh() {
 	isPaused = 1
 	clearInterval(refreshBoard)
 }
 
+/* Stop food generation */
 function stopFoodGeneration() {
 	clearInterval(foodTimer)
 }
 
+/* Get the cell number given the x and y coordinate */
 function getCellno(x, y) {
 	return x*50 + y
 }
 
+/* Returns a reference to the html element corresponding to the cell at coordinate x and y */
 function getCell(x, y) {
 	const cellno = getCellno(x, y)
 	return document.getElementById('c' + cellno)
 }
 
+/* Render the board */
 function renderBoard() {
 	const board = document.querySelector('#board')
 	// CLear the board
@@ -97,7 +92,7 @@ function renderBoard() {
 	}
 }
 
-
+/* Recalculates the coordinates of all the parts of the snake and checks for the event of collision and eating of food */
 function moveSnake() {
 	snakeCoords.forEach((coord, index, snakeCoords) => {
 		// If it is not the head of the snake, the new coordinate of this part is the old coordinate of the next part of the snake
@@ -144,56 +139,78 @@ function moveSnake() {
 	})
 }
 
+/* Called when the snake has eaten food, the snake is grown by adding one part as the tail 
+   The attributes of the added part doesn't matter as when we call moveSnake() subsequently
+   it will reassign the attributes of new part to the old tail, thus when the snake moves by one
+   step, the empty place left by the old tail is occupied by the new part */
 function growSnake() {
 	const tailCoord = JSON.parse(JSON.stringify(snakeCoords[0]));
 	snakeCoords.unshift(tailCoord)
 }
 
+/* Update the score and hi-score */
 function updateScoreBoard() {
 	$('#score').text(score)
 	if(score > hiscore)
 		$('#hiscore').text(score)
 }
 
+/* A utility function to insert key value pairs into local storage */
 function insertIntoLocalStorage(key, value) {
 	window.localStorage.setItem(key, JSON.stringify(value))
 }
 
+/* A utility function to fetch values from local storage based on key */
 function getFromLocalStorage(key) {
 	return JSON.parse(window.localStorage.getItem(key))
 }
 
+/* Function that runs when the button in the header is clicked */
 function handleButtonClick() {
+	// If the game hasn't started, then start the game and change the text of the button to Pause
 	if(gameOver) {
 		startGame()
 		$('#pause').text('Pause')
 	}
-	else if(isPaused) {
+	else if(isPaused) { // If the game has started and it is paused, resume the refreshing and change the text of the button to Pause
 		startBoardRefresh()
 		$('#pause').text('Pause')
 	}
-	else {
+	else { // If the game is active then stop the refreshing to pause the game and change the text of the button to Resume
 		stopBoardRefresh()
 		$('#pause').text('Resume')
 	}
 }
 
-
-
+/* The function that needs to be called to start the game */
 function startGame() {
+	snakeCoords = [
+		{ x: 25, y: 25 }, 
+		{ x: 25, y: 26 }, 
+		{ x: 25, y: 27 },
+		{ x: 25, y: 28 } // The last coordinate in the snakeCoords represend the head of the snake
+	]	
+	
+	foodCoord = {
+		x: Math.floor(Math.random() * 50),
+		y: Math.floor(Math.random() * 50),
+	}
+
+	dir = RIGHT
 	score = 0
 	gameOver = 0
 	hiscore = getFromLocalStorage('hiscore')
 	if(!hiscore)
 		hiscore = 0
-	document.getElementById('hiscore').innerHTML = hiscore
-	init()
+	$('#hiscore').text(hiscore)
 	updateScoreBoard()
 	renderBoard()
 	startBoardRefresh()
 	startFoodGeneration()
 }
 
+/* Will throttle func to only fire once every limit milliseconds, 
+	if a second call is made before limit is over, it will be queued */
 const throttle = (func, limit) => {
   let lastFunc
   let lastRan
@@ -221,23 +238,23 @@ window.addEventListener('keyup', throttle(function(e) {
 		case 80: // pause/play
 					handleButtonClick()
 					break
-		case 37: // left
-					if(dir == RIGHT)
+		case 37: // move left
+					if(dir == RIGHT) // can't move left when moving right
 						break
 					dir = LEFT
 					break
 		case 38: // up
-					if(dir == DOWN)
+					if(dir == DOWN) // can't move up when moving down
 						break
 					dir = UP
 					break
 		case 39: // right 
-					if(dir == LEFT)
+					if(dir == LEFT) // can't move right when moving left
 						break
 					dir = RIGHT
 					break
 		case 40: // down
-					if(dir == UP)
+					if(dir == UP) // can't move down when moving up
 						break
 					dir = DOWN
 					break
