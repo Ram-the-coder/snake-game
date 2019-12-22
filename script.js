@@ -4,18 +4,23 @@ let refreshBoard, foodTimer // setInterval variables
 let isPaused=1, score=0, hiscore, gameOver=1
 
 /* The coordinates of food */
-let foodCoord = {
-	x: Math.floor(Math.random() * 50),
-	y: Math.floor(Math.random() * 50),
-}
-
+let foodCoord;
 /* The coordinates of the snake */
-let snakeCoords = [
-	{ x: 25, y: 25, dir: RIGHT }, 
-	{ x: 25, y: 26, dir: RIGHT }, 
-	{ x: 25, y: 27, dir: RIGHT },
-	{ x: 25, y: 28, dir: RIGHT }
-]
+let snakeCoords;
+
+function init() {
+	snakeCoords = [
+		{ x: 25, y: 25, dir: RIGHT }, 
+		{ x: 25, y: 26, dir: RIGHT }, 
+		{ x: 25, y: 27, dir: RIGHT },
+		{ x: 25, y: 28, dir: RIGHT }
+	]	
+
+	foodCoord = {
+		x: Math.floor(Math.random() * 50),
+		y: Math.floor(Math.random() * 50),
+	}
+}
 
 
 function startBoardRefresh() {
@@ -187,6 +192,7 @@ function startGame() {
 	if(!hiscore)
 		hiscore = 0
 	document.getElementById('hiscore').innerHTML = hiscore
+	init()
 	updateScoreBoard()
 	renderBoard()
 	startBoardRefresh()
