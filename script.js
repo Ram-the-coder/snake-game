@@ -26,23 +26,25 @@ function startBoardRefresh() {
 
 /* Setup the setInterval function so that it periodically generates food at a new spot */
 function startFoodGeneration() {
-	foodTimer = setInterval(() => {
-		let okay = true;
-		do {
-			foodCoord = {
-				x: Math.floor(Math.random() * 50),
-				y: Math.floor(Math.random() * 50),
-			}	
+	foodTimer = setInterval(() => generateFoodCoords(), foodStayTime)
+}
 
-			for(const coord of snakeCoords) {
-				if(coord.x == foodCoord.x && coord.y == foodCoord.y) {
-					okay = false;
-					break;
-				}
+/* Generates the coordinates at which the food should appear */
+function generateFoodCoords() {
+	let okay = true
+	do {
+		foodCoord = {
+			x: Math.floor(Math.random() * 50),
+			y: Math.floor(Math.random() * 50),
+		}	
+
+		for(const coord of snakeCoords) {
+			if(coord.x == foodCoord.x && coord.y == foodCoord.y) {
+				okay = false;
+				break;
 			}
-		} while(!okay)
-		
-	}, foodStayTime)
+		}
+	} while(!okay)
 }
 
 /* Stop refreshing the board */
@@ -155,10 +157,7 @@ function moveSnake() {
 		score += 5
 		updateScoreBoard()
 		stopFoodGeneration()
-		foodCoord = {
-			x: Math.floor(Math.random() * 50),
-			y: Math.floor(Math.random() * 50),
-		}
+		generateFoodCoords()
 		startFoodGeneration()
 		shouldGrow = true
 	}
@@ -209,10 +208,7 @@ function startGame() {
 		{ x: 25, y: 28 } // The last coordinate in the snakeCoords represend the head of the snake
 	]	
 	
-	foodCoord = {
-		x: Math.floor(Math.random() * 50),
-		y: Math.floor(Math.random() * 50),
-	}
+	generateFoodCoords()
 
 	dir = RIGHT
 	score = 0
