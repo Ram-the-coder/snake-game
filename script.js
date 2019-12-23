@@ -143,6 +143,7 @@ function moveSnake() {
 		gameOver = 1
 		$('#pause').text('Start')
 		stopBoardRefresh()
+		stopFoodGeneration()
 		if(score > hiscore) {
 			alert("Congratulations you have achieved the hiscore of " + score)
 			insertIntoLocalStorage('hiscore', score)
