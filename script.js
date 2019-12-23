@@ -191,10 +191,12 @@ function handleButtonClick() {
 	}
 	else if(isPaused) { // If the game has started and it is paused, resume the refreshing and change the text of the button to Pause
 		startBoardRefresh()
+		startFoodGeneration()
 		$('#pause').text('Pause')
 	}
 	else { // If the game is active then stop the refreshing to pause the game and change the text of the button to Resume
 		stopBoardRefresh()
+		stopFoodGeneration()
 		$('#pause').text('Resume')
 	}
 }
