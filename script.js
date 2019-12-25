@@ -31,8 +31,9 @@ function startFoodGeneration() {
 
 /* Generates the coordinates at which the food should appear */
 function generateFoodCoords() {
-	let okay = true
+	let okay
 	do {
+		okay = true
 		foodCoord = {
 			x: Math.floor(Math.random() * 50),
 			y: Math.floor(Math.random() * 50),
