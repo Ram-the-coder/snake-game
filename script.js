@@ -10,8 +10,8 @@ let isPaused=1, score=0, hiscore, gameOver=1
 
 let dir; // Direction that the head of the snake is moving
 
-let foodCoord; // The coordinates of food
-let snakeCoords; // The coordinates of the snake
+let foodCoord; 
+let snakeCoords;
 let shouldGrow = true
 
 
@@ -28,7 +28,7 @@ function startFoodGeneration() {
 	foodTimer = setInterval(() => generateFoodCoords(), foodStayTime)
 }
 
-/* Generates the coordinates at which the food should appear */
+
 function generateFoodCoords() {
 	if(foodCoord) {
 		getCell(foodCoord.x, foodCoord.y).classList.remove('food')
@@ -43,13 +43,13 @@ function generateFoodCoords() {
 	getCell(foodCoord.x, foodCoord.y).classList.add('food')
 }
 
-/* Stop refreshing the board */
+
 function stopBoardRefresh() {
 	isPaused = 1
 	clearInterval(refreshBoard)
 }
 
-/* Stop food generation */
+
 function stopFoodGeneration() {
 	clearInterval(foodTimer)
 }
@@ -65,11 +65,9 @@ function getCell(x, y) {
 	return document.getElementById('c' + cellno)
 }
 
-/* Render the board */
+
 function initBoard() {
 	const board = document.querySelector('#board')
-	// CLear the board
-	board.innerHTML = ""
 
 	// Create the cells in the board
 	for(let i=0; i<50; ++i) {
@@ -98,7 +96,7 @@ function initBoard() {
 	})	
 }
 
-/* Recalculates the coordinates of all the parts of the snake and checks for the event of collision and eating of food */
+/* Updates the coordinates of the snake and checks for the event of collision and eating of food */
 function moveSnake() {
 
 	/*  Except the head, every part of the snake takes the place of the part in front of it.
@@ -170,17 +168,17 @@ function updateScoreBoard() {
 		$('#hiscore').text(score)
 }
 
-/* A utility function to insert key value pairs into local storage */
+
 function insertIntoLocalStorage(key, value) {
 	window.localStorage.setItem(key, JSON.stringify(value))
 }
 
-/* A utility function to fetch values from local storage based on key */
+
 function getFromLocalStorage(key) {
 	return JSON.parse(window.localStorage.getItem(key))
 }
 
-/* Function that runs when the button in the header is clicked */
+
 function handleButtonClick() {
 	// If the game hasn't started, then start the game and change the text of the button to Pause
 	if(gameOver) {
@@ -199,7 +197,7 @@ function handleButtonClick() {
 	}
 }
 
-/* The function that needs to be called to start the game */
+
 function startGame() {
 	snakeCoords = [
 		{ x: 25, y: 25 }, 
@@ -216,7 +214,6 @@ function startGame() {
 		hiscore = 0
 	$('#hiscore').text(hiscore)
 	updateScoreBoard()
-	// renderBoard()
 	initBoard()
 	startBoardRefresh()
 	generateFoodCoords()
@@ -246,7 +243,7 @@ const throttle = (func, limit) => {
   }
 }
 
-/* Register key press events */
+
 window.addEventListener('keyup', throttle(function(e) {
 	switch(e.keyCode) {
 		case 80: // pause/play
